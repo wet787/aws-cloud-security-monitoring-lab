@@ -2,73 +2,73 @@
 
 ![AWS](https://img.shields.io/badge/AWS-Cloud%20Security-orange) ![CloudTrail](https://img.shields.io/badge/CloudTrail-Logging-blue) ![CloudWatch](https://img.shields.io/badge/CloudWatch-Monitoring-purple) ![SNS](https://img.shields.io/badge/SNS-Alerting-green) ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 
-\---
+---
 
-\## 📌 Project Overview
+## 📌 Project Overview
 
-This project demonstrates how AWS security monitoring can be implemented using \*\*CloudTrail\*\*, \*\*CloudWatch Logs\*\*, \*\*CloudWatch Metric Filters\*\*, \*\*CloudWatch Alarms\*\*, \*\*Amazon SNS\*\*, and \*\*IAM\*\*.
+This project demonstrates how AWS security monitoring can be implemented using **CloudTrail**, **CloudWatch Logs**, **CloudWatch Metric Filters**, **CloudWatch Alarms**, **Amazon SNS**, and **IAM**.
 
-The goal of this lab is to collect AWS account activity, create cloud security detection rules, generate controlled test events, validate alerting workflows, and document the results from a \*\*SOC analyst perspective\*\*.
+The goal of this lab is to collect AWS account activity, create cloud security detection rules, generate controlled test events, validate alerting workflows, and document the results from a **SOC analyst perspective**.
 
-\---
+---
 
-\## 🎯 Lab Objectives
+## 🎯 Lab Objectives
 
-\- 🔐 Secure the AWS account before deploying monitoring services
+- 🔐 Secure the AWS account before deploying monitoring services
 
-\- 🛡️ Enable MFA on the AWS root account
+- 🛡️ Enable MFA on the AWS root account
 
-\- 💰 Create a budget alert for cost monitoring
+- 💰 Create a budget alert for cost monitoring
 
-\- 👤 Create a dedicated IAM admin user for daily lab work
+- 👤 Create a dedicated IAM admin user for daily lab work
 
-\- 🧾 Configure CloudTrail to record AWS management activity
+- 🧾 Configure CloudTrail to record AWS management activity
 
-\- 📥 Send CloudTrail logs to CloudWatch Logs
+- 📥 Send CloudTrail logs to CloudWatch Logs
 
-\- 🔎 Create CloudWatch metric filters for suspicious AWS activity
+- 🔎 Create CloudWatch metric filters for suspicious AWS activity
 
-\- 🚨 Create CloudWatch alarms for detected security events
+- 🚨 Create CloudWatch alarms for detected security events
 
-\- 📧 Configure SNS email notifications
+- 📧 Configure SNS email notifications
 
-\- 🧪 Generate controlled test events
+- 🧪 Generate controlled test events
 
-\- ✅ Validate detection workflows
+- ✅ Validate detection workflows
 
-\- 🧹 Remove temporary test resources after validation
+- 🧹 Remove temporary test resources after validation
 
-\- 📝 Document findings, evidence, and analyst notes
+- 📝 Document findings, evidence, and analyst notes
 
-\---
+---
 
-\## 🧰 Tools and AWS Services Used
+## 🧰 Tools and AWS Services Used
 
 | Service | Purpose |
 
 |---|---|
 
-| 🔐 \*\*AWS IAM\*\* | User, group, and access management |
+| 🔐 **AWS IAM** | User, group, and access management |
 
-| 🧾 \*\*AWS CloudTrail\*\* | API activity and console login logging |
+| 🧾 **AWS CloudTrail** | API activity and console login logging |
 
-| 📊 \*\*Amazon CloudWatch Logs\*\* | Centralized log storage and review |
+| 📊 **Amazon CloudWatch Logs** | Centralized log storage and review |
 
-| 🔎 \*\*CloudWatch Metric Filters\*\* | Detection logic for suspicious activity |
+| 🔎 **CloudWatch Metric Filters** | Detection logic for suspicious activity |
 
-| 🚨 \*\*CloudWatch Alarms\*\* | Alerting based on metric thresholds |
+| 🚨 **CloudWatch Alarms** | Alerting based on metric thresholds |
 
-| 📧 \*\*Amazon SNS\*\* | Email notification delivery |
+| 📧 **Amazon SNS** | Email notification delivery |
 
-| 💰 \*\*AWS Budgets\*\* | Cost monitoring and governance |
+| 💰 **AWS Budgets** | Cost monitoring and governance |
 
-| 🔑 \*\*AWS KMS\*\* | Encryption for CloudTrail logs |
+| 🔑 **AWS KMS** | Encryption for CloudTrail logs |
 
-| 🪣 \*\*Amazon S3\*\* | CloudTrail log storage |
+| 🪣 **Amazon S3** | CloudTrail log storage |
 
-\---
+---
 
-\## 🏗️ Lab Architecture
+## 🏗️ Lab Architecture
 
 ```text
 
@@ -100,271 +100,234 @@ Analyst reviews evidence and documents findings
 
 ```
 
-\---
+---
 
-\## 🔍 Detection Use Cases
+## 🔍 Detection Use Cases
 
-\### 🚫 Detection 1: Unauthorized API Calls
+### 🚫 Detection 1: Unauthorized API Calls
 
 This detection identifies AWS API calls that fail because the user, role, or service does not have permission to perform the requested action.
 
-\*\*Filter Pattern\*\*
+**Filter Pattern**
 
 ```text
 
-{ ($.errorCode = "\*UnauthorizedOperation") || ($.errorCode = "AccessDenied\*") }
+{ ($.errorCode = "*UnauthorizedOperation") || ($.errorCode = "AccessDenied*") }
 
 ```
 
 This detection can help identify:
 
-\- ⚠️ Misconfigured IAM permissions
+- ⚠️ Misconfigured IAM permissions
 
-\- 🚫 Unauthorized access attempts
+- 🚫 Unauthorized access attempts
 
-\- 🧪 Privilege probing
+- 🧪 Privilege probing
 
-\- 🕵️ Reconnaissance activity
+- 🕵️ Reconnaissance activity
 
-\- 🔑 Compromised credentials attempting restricted actions
+- 🔑 Compromised credentials attempting restricted actions
 
-\---
+---
 
-\### 🔐 Detection 2: Failed AWS Console Login Attempts
+### 🔐 Detection 2: Failed AWS Console Login Attempts
 
 This detection identifies failed AWS Management Console login attempts using CloudTrail `ConsoleLogin` events.
 
-\*\*Filter Pattern\*\*
+**Filter Pattern**
 
 ```text
 
-{ ($.eventName = "ConsoleLogin") \&\& ($.responseElements.ConsoleLogin = "Failure") }
+{ ($.eventName = "ConsoleLogin") && ($.responseElements.ConsoleLogin = "Failure") }
 
 ```
 
 This detection can help identify:
 
-\- ❌ Incorrect password attempts
+- ❌ Incorrect password attempts
 
-\- 🚫 Unauthorized console access attempts
+- 🚫 Unauthorized console access attempts
 
-\- 🧪 Credential guessing
+- 🧪 Credential guessing
 
-\- 🔁 Brute-force login behavior
+- 🔁 Brute-force login behavior
 
-\- 🔑 Possible compromised credential testing
+- 🔑 Possible compromised credential testing
 
-\---
+---
 
-\## 📂 Project Structure
+## 📂 Project Structure
 
 ```text
-
 aws-cloud-security-monitoring-lab/
-
 ├── README.md
-
 ├── notes/
-
 │   ├── 01-account-security.md
-
 │   ├── 02-budget-alert.md
-
 │   ├── 03-iam-admin-user.md
-
 │   ├── 04-lab-progress.md
-
 │   ├── 05-cloudtrail-setup.md
-
 │   ├── 06-unauthorized-api-detection-test.md
-
 │   ├── 07-cleanup-test-resources.md
-
 │   └── 08-failed-console-login-detection-test.md
-
 ├── detection-rules/
-
 │   ├── unauthorized-api-calls.md
-
 │   └── failed-console-logins.md
-
 └── screenshots/
-
-&#x20;   ├── 01-root-mfa-enabled.png
-
-&#x20;   ├── 02-budget-alert-created.png
-
-&#x20;   ├── 03-admin-group-created.png
-
-&#x20;   ├── 04-iam-admin-user-created.png
-
-&#x20;   ├── 05-iam-admin-mfa-enabled.png
-
-&#x20;   ├── 06-cloudtrail-created.png
-
-&#x20;   ├── 07-cloudwatch-log-streams.png
-
-&#x20;   ├── 08-unauthorized-api-metric-filter.png
-
-&#x20;   ├── 09-unauthorized-api-alarm-created.png
-
-&#x20;   ├── 10-sns-email-confirmed.png
-
-&#x20;   ├── 11-readonly-test-user-created.png
-
-&#x20;   ├── 12-access-denied-test-event.png
-
-&#x20;   ├── 13-unauthorized-api-alarm-triggered.png
-
-&#x20;   ├── 14-readonly-test-user-deleted.png
-
-&#x20;   ├── 15-readonly-test-group-deleted.png
-
-&#x20;   ├── 16-failed-console-login-metric-filter.png
-
-&#x20;   ├── 17-failed-console-login-alarm-created.png
-
-&#x20;   ├── 18-failed-console-login-test-event.png
-
-&#x20;   └── 19-failed-console-login-alarm-triggered.png
-
+    ├── 01-root-mfa-enabled.png
+    ├── 02-budget-alert-created.png
+    ├── 03-admin-group-created.png
+    ├── 04-iam-admin-user-created.png
+    ├── 05-iam-admin-mfa-enabled.png
+    ├── 06-cloudtrail-created.png
+    ├── 07-cloudwatch-log-streams.png
+    ├── 08-unauthorized-api-metric-filter.png
+    ├── 09-unauthorized-api-alarm-created.png
+    ├── 10-sns-email-confirmed.png
+    ├── 11-readonly-test-user-created.png
+    ├── 12-access-denied-test-event.png
+    ├── 13-unauthorized-api-alarm-triggered.png
+    ├── 14-readonly-test-user-deleted.png
+    ├── 15-readonly-test-group-deleted.png
+    ├── 16-failed-console-login-metric-filter.png
+    ├── 17-failed-console-login-alarm-created.png
+    ├── 18-failed-console-login-test-event.png
+    └── 19-failed-console-login-alarm-triggered.png
 ```
 
-\---
+## ✅ Completed Work
 
-\## ✅ Completed Work
+- ✅ Created and secured a new AWS account
 
-\- ✅ Created and secured a new AWS account
+- ✅ Enabled MFA on the root account
 
-\- ✅ Enabled MFA on the root account
+- ✅ Created a budget alert
 
-\- ✅ Created a budget alert
+- ✅ Created an IAM admin group
 
-\- ✅ Created an IAM admin group
+- ✅ Created an IAM admin user
 
-\- ✅ Created an IAM admin user
+- ✅ Enabled MFA for the IAM admin user
 
-\- ✅ Enabled MFA for the IAM admin user
+- ✅ Created a multi-region CloudTrail trail
 
-\- ✅ Created a multi-region CloudTrail trail
+- ✅ Enabled CloudTrail log file validation
 
-\- ✅ Enabled CloudTrail log file validation
+- ✅ Enabled SSE-KMS encryption for CloudTrail logs
 
-\- ✅ Enabled SSE-KMS encryption for CloudTrail logs
+- ✅ Sent CloudTrail logs to CloudWatch Logs
 
-\- ✅ Sent CloudTrail logs to CloudWatch Logs
+- ✅ Verified CloudTrail log streams in CloudWatch
 
-\- ✅ Verified CloudTrail log streams in CloudWatch
+- ✅ Created an unauthorized API calls metric filter
 
-\- ✅ Created an unauthorized API calls metric filter
+- ✅ Created a CloudWatch alarm for unauthorized API activity
 
-\- ✅ Created a CloudWatch alarm for unauthorized API activity
+- ✅ Confirmed SNS email subscription
 
-\- ✅ Confirmed SNS email subscription
+- ✅ Created a read-only test user
 
-\- ✅ Created a read-only test user
+- ✅ Generated a controlled access denied event
 
-\- ✅ Generated a controlled access denied event
+- ✅ Validated unauthorized API metric activity
 
-\- ✅ Validated unauthorized API metric activity
+- ✅ Deleted temporary test IAM resources
 
-\- ✅ Deleted temporary test IAM resources
+- ✅ Created a failed console login metric filter
 
-\- ✅ Created a failed console login metric filter
+- ✅ Created a CloudWatch alarm for failed console login attempts
 
-\- ✅ Created a CloudWatch alarm for failed console login attempts
+- ✅ Generated a controlled failed AWS Console login event
 
-\- ✅ Generated a controlled failed AWS Console login event
+- ✅ Validated failed console login metric activity
 
-\- ✅ Validated failed console login metric activity
+---
 
-\---
-
-\## 📸 Evidence Screenshots
+## 📸 Evidence Screenshots
 
 | # | Evidence | Screenshot |
 
 |---:|---|---|
 
-| 01 | 🔐 Root MFA enabled | \[View](screenshots/01-root-mfa-enabled.png) |
+| 01 | 🔐 Root MFA enabled | [View](screenshots/01-root-mfa-enabled.png) |
 
-| 02 | 💰 Budget alert created | \[View](screenshots/02-budget-alert-created.png) |
+| 02 | 💰 Budget alert created | [View](screenshots/02-budget-alert-created.png) |
 
-| 03 | 👥 Admin group created | \[View](screenshots/03-admin-group-created.png) |
+| 03 | 👥 Admin group created | [View](screenshots/03-admin-group-created.png) |
 
-| 04 | 👤 IAM admin user created | \[View](screenshots/04-iam-admin-user-created.png) |
+| 04 | 👤 IAM admin user created | [View](screenshots/04-iam-admin-user-created.png) |
 
-| 05 | 🛡️ IAM admin MFA enabled | \[View](screenshots/05-iam-admin-mfa-enabled.png) |
+| 05 | 🛡️ IAM admin MFA enabled | [View](screenshots/05-iam-admin-mfa-enabled.png) |
 
-| 06 | 🧾 CloudTrail created | \[View](screenshots/06-cloudtrail-created.png) |
+| 06 | 🧾 CloudTrail created | [View](screenshots/06-cloudtrail-created.png) |
 
-| 07 | 📥 CloudWatch log streams verified | \[View](screenshots/07-cloudwatch-log-streams.png) |
+| 07 | 📥 CloudWatch log streams verified | [View](screenshots/07-cloudwatch-log-streams.png) |
 
-| 08 | 🔎 Unauthorized API metric filter created | \[View](screenshots/08-unauthorized-api-metric-filter.png) |
+| 08 | 🔎 Unauthorized API metric filter created | [View](screenshots/08-unauthorized-api-metric-filter.png) |
 
-| 09 | 🚨 Unauthorized API alarm created | \[View](screenshots/09-unauthorized-api-alarm-created.png) |
+| 09 | 🚨 Unauthorized API alarm created | [View](screenshots/09-unauthorized-api-alarm-created.png) |
 
-| 10 | 📧 SNS email subscription confirmed | \[View](screenshots/10-sns-email-confirmed.png) |
+| 10 | 📧 SNS email subscription confirmed | [View](screenshots/10-sns-email-confirmed.png) |
 
-| 11 | 👤 Read-only test user created | \[View](screenshots/11-readonly-test-user-created.png) |
+| 11 | 👤 Read-only test user created | [View](screenshots/11-readonly-test-user-created.png) |
 
-| 12 | 🚫 Access denied event generated | \[View](screenshots/12-access-denied-test-event.png) |
+| 12 | 🚫 Access denied event generated | [View](screenshots/12-access-denied-test-event.png) |
 
-| 13 | 📈 Unauthorized API alarm activity validated | \[View](screenshots/13-unauthorized-api-alarm-triggered.png) |
+| 13 | 📈 Unauthorized API alarm activity validated | [View](screenshots/13-unauthorized-api-alarm-triggered.png) |
 
-| 14 | 🧹 Read-only test user deleted | \[View](screenshots/14-readonly-test-user-deleted.png) |
+| 14 | 🧹 Read-only test user deleted | [View](screenshots/14-readonly-test-user-deleted.png) |
 
-| 15 | 🧹 Read-only test group deleted | \[View](screenshots/15-readonly-test-group-deleted.png) |
+| 15 | 🧹 Read-only test group deleted | [View](screenshots/15-readonly-test-group-deleted.png) |
 
-| 16 | 🔎 Failed console login metric filter created | \[View](screenshots/16-failed-console-login-metric-filter.png) |
+| 16 | 🔎 Failed console login metric filter created | [View](screenshots/16-failed-console-login-metric-filter.png) |
 
-| 17 | 🚨 Failed console login alarm created | \[View](screenshots/17-failed-console-login-alarm-created.png) |
+| 17 | 🚨 Failed console login alarm created | [View](screenshots/17-failed-console-login-alarm-created.png) |
 
-| 18 | ❌ Failed console login test event generated | \[View](screenshots/18-failed-console-login-test-event.png) |
+| 18 | ❌ Failed console login test event generated | [View](screenshots/18-failed-console-login-test-event.png) |
 
-| 19 | 📈 Failed console login alarm activity validated | \[View](screenshots/19-failed-console-login-alarm-triggered.png) |
+| 19 | 📈 Failed console login alarm activity validated | [View](screenshots/19-failed-console-login-alarm-triggered.png) |
 
-\---
+---
 
-\## 📝 Documentation
+## 📝 Documentation
 
 | Document | Description |
 
 |---|---|
 
-| \[Account Security Setup](notes/01-account-security.md) | Root account MFA and initial account hardening |
+| [Account Security Setup](notes/01-account-security.md) | Root account MFA and initial account hardening |
 
-| \[Budget Alert Setup](notes/02-budget-alert.md) | Cost monitoring and financial risk reduction |
+| [Budget Alert Setup](notes/02-budget-alert.md) | Cost monitoring and financial risk reduction |
 
-| \[IAM Admin User Setup](notes/03-iam-admin-user.md) | IAM admin group, admin user, and MFA setup |
+| [IAM Admin User Setup](notes/03-iam-admin-user.md) | IAM admin group, admin user, and MFA setup |
 
-| \[Lab Progress Log](notes/04-lab-progress.md) | Step-by-step project progress |
+| [Lab Progress Log](notes/04-lab-progress.md) | Step-by-step project progress |
 
-| \[CloudTrail Setup](notes/05-cloudtrail-setup.md) | CloudTrail, KMS, CloudWatch Logs, and log validation |
+| [CloudTrail Setup](notes/05-cloudtrail-setup.md) | CloudTrail, KMS, CloudWatch Logs, and log validation |
 
-| \[Unauthorized API Calls Detection Test](notes/06-unauthorized-api-detection-test.md) | Controlled access denied test and validation |
+| [Unauthorized API Calls Detection Test](notes/06-unauthorized-api-detection-test.md) | Controlled access denied test and validation |
 
-| \[Cleanup: Test IAM Resources](notes/07-cleanup-test-resources.md) | Cleanup of temporary IAM test resources |
+| [Cleanup: Test IAM Resources](notes/07-cleanup-test-resources.md) | Cleanup of temporary IAM test resources |
 
-| \[Failed Console Login Detection Test](notes/08-failed-console-login-detection-test.md) | Controlled failed login test and validation |
+| [Failed Console Login Detection Test](notes/08-failed-console-login-detection-test.md) | Controlled failed login test and validation |
 
-\---
+---
 
-\## 🧠 Detection Rules
+## 🧠 Detection Rules
 
 | Detection Rule | Description |
 
 |---|---|
 
-| \[Unauthorized API Calls](detection-rules/unauthorized-api-calls.md) | Detects denied AWS API activity using CloudTrail and CloudWatch |
+| [Unauthorized API Calls](detection-rules/unauthorized-api-calls.md) | Detects denied AWS API activity using CloudTrail and CloudWatch |
 
-| \[Failed AWS Console Login Attempts](detection-rules/failed-console-logins.md) | Detects failed AWS Management Console login attempts |
+| [Failed AWS Console Login Attempts](detection-rules/failed-console-logins.md) | Detects failed AWS Management Console login attempts |
 
-\---
+---
 
-\## 🧪 Detection Validation Summary
+## 🧪 Detection Validation Summary
 
-\### 🚫 Unauthorized API Calls
+### 🚫 Unauthorized API Calls
 
 A temporary read-only IAM user was created to safely generate a controlled denied action. The user attempted to create another IAM user, which resulted in an access denied event.
 
@@ -394,9 +357,9 @@ SNS notification channel was confirmed
 
 ```
 
-\---
+---
 
-\### 🔐 Failed AWS Console Login Attempts
+### 🔐 Failed AWS Console Login Attempts
 
 A controlled failed login attempt was generated by attempting to sign in to the AWS Management Console using the correct IAM username and an intentionally incorrect password.
 
@@ -428,86 +391,86 @@ SNS notification channel was available for alerting
 
 During testing, the existing `UnauthorizedAPICallsAlarm` also triggered. This provided additional context that authentication failures may generate related unauthorized or denied activity in CloudTrail.
 
-\---
+---
 
-\## 🛡️ Skills Demonstrated
+## 🛡️ Skills Demonstrated
 
-\- ☁️ AWS cloud security fundamentals
+- ☁️ AWS cloud security fundamentals
 
-\- 🔐 Identity and access management
+- 🔐 Identity and access management
 
-\- 🧾 CloudTrail logging
+- 🧾 CloudTrail logging
 
-\- 📊 CloudWatch log monitoring
+- 📊 CloudWatch log monitoring
 
-\- 🔎 Detection engineering
+- 🔎 Detection engineering
 
-\- 🚨 CloudWatch alarm configuration
+- 🚨 CloudWatch alarm configuration
 
-\- 📧 SNS alerting
+- 📧 SNS alerting
 
-\- 🧪 Detection validation
+- 🧪 Detection validation
 
-\- 🧹 Cloud security hygiene
+- 🧹 Cloud security hygiene
 
-\- 📝 SOC-style documentation
+- 📝 SOC-style documentation
 
-\- 📁 GitHub project organization
+- 📁 GitHub project organization
 
-\- 🧠 Security investigation thinking
+- 🧠 Security investigation thinking
 
-\---
+---
 
-\## 🔒 Security Considerations
+## 🔒 Security Considerations
 
 Before publishing this project, all screenshots should be reviewed and sensitive information should be removed or redacted, including:
 
-\- AWS account IDs
+- AWS account IDs
 
-\- ARNs
+- ARNs
 
-\- IP addresses
+- IP addresses
 
-\- Email addresses
+- Email addresses
 
-\- Browser URLs
+- Browser URLs
 
-\- Console sign-in URLs
+- Console sign-in URLs
 
-\- SNS subscription details
+- SNS subscription details
 
-\- S3 bucket paths
+- S3 bucket paths
 
-\- CloudTrail log paths
+- CloudTrail log paths
 
-\- CloudWatch URLs
+- CloudWatch URLs
 
-\- Credential-related information
+- Credential-related information
 
-\---
+---
 
-\## 🚧 Project Status
+## 🚧 Project Status
 
-\*\*In progress\*\*
+**In progress**
 
-\### ✅ Completed
+### ✅ Completed
 
-\- Phase 1: AWS Account Security Setup
+- Phase 1: AWS Account Security Setup
 
-\- Phase 2: CloudTrail and CloudWatch Log Delivery
+- Phase 2: CloudTrail and CloudWatch Log Delivery
 
-\- Phase 3: Unauthorized API Calls Detection
+- Phase 3: Unauthorized API Calls Detection
 
-\- Phase 4: Test Resource Cleanup
+- Phase 4: Test Resource Cleanup
 
-\- Phase 5: Failed AWS Console Login Detection
+- Phase 5: Failed AWS Console Login Detection
 
-\### 🔜 Next Planned Step
+### 🔜 Next Planned Step
 
-Create the next detection rule for \*\*IAM policy changes\*\* or \*\*security group configuration changes\*\*.
+Create the next detection rule for **IAM policy changes** or **security group configuration changes**.
 
-\---
+---
 
-\## 👤 Author
+## 👤 Author
 
-\*\*Wetser Santos Feliciano\*\*
+**Wetser Santos Feliciano**

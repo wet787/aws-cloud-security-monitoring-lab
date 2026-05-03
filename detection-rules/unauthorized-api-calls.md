@@ -1,48 +1,28 @@
-\# 🚫 Detection Rule: Unauthorized API Calls
+# 🚫 Detection Rule: Unauthorized API Calls
 
-
-
-\## 🎯 Objective
-
-
+## 🎯 Objective
 
 Detect AWS API calls that fail because the user, role, or service does not have permission to perform the requested action.
 
+## 📥 Data Source
 
+- AWS CloudTrail
 
-\## 📥 Data Source
+- Amazon CloudWatch Logs
 
-
-
-\- AWS CloudTrail
-
-\- Amazon CloudWatch Logs
-
-
-
-\## 📂 Log Group
-
-
+## 📂 Log Group
 
 `/aws/cloudtrail/security-monitoring`
 
-
-
-\## 🔎 Filter Pattern
-
-
+## 🔎 Filter Pattern
 
 ```text
 
-{ ($.errorCode = "\*UnauthorizedOperation") || ($.errorCode = "AccessDenied\*") }
+{ ($.errorCode = "*UnauthorizedOperation") || ($.errorCode = "AccessDenied*") }
 
 ```
 
-
-
-\## 📊 Metric Details
-
-
+## 📊 Metric Details
 
 | Field | Value |
 
@@ -60,11 +40,7 @@ Detect AWS API calls that fail because the user, role, or service does not have 
 
 | Unit | `Count` |
 
-
-
-\## 🚨 Alarm Details
-
-
+## 🚨 Alarm Details
 
 | Field | Value |
 
@@ -80,123 +56,84 @@ Detect AWS API calls that fail because the user, role, or service does not have 
 
 | Notification topic | `aws-security-alerts` |
 
-
-
-\## 🧠 Detection Logic
-
-
+## 🧠 Detection Logic
 
 This rule monitors CloudTrail events for unauthorized or access denied API activity. When a matching event is written to the CloudWatch log group, the metric filter increments the `UnauthorizedAPICallCount` metric.
 
-
-
 The CloudWatch alarm triggers when the metric count is greater than or equal to `1` within a 5-minute period.
 
-
-
-\## 🛡️ Security Reasoning
-
-
+## 🛡️ Security Reasoning
 
 Unauthorized API calls may indicate misconfigured permissions, application errors, privilege misuse, or attempted access to AWS resources without proper authorization.
 
-
-
 Monitoring these events helps reduce detection time and provides visibility into denied actions across the AWS account.
 
+## ⚠️ Possible Causes
 
+- IAM user lacks required permissions
 
-\## ⚠️ Possible Causes
+- IAM role is misconfigured
 
+- User attempts to access unauthorized AWS services
 
+- Application uses outdated or incorrect credentials
 
-\- IAM user lacks required permissions
+- Suspicious activity from compromised credentials
 
-\- IAM role is misconfigured
+- Reconnaissance or privilege probing activity
 
-\- User attempts to access unauthorized AWS services
+## 🧪 Analyst Response
 
-\- Application uses outdated or incorrect credentials
+1. Review the CloudTrail event.
 
-\- Suspicious activity from compromised credentials
+2. Identify the user, role, source IP address, event name, and affected service.
 
-\- Reconnaissance or privilege probing activity
+3. Determine whether the action was expected or authorized.
 
+4. Validate whether the denied request came from a known user or service.
 
+5. Review IAM permissions if the action was legitimate.
 
-\## 🧪 Analyst Response
+6. Investigate further if the activity appears suspicious, repeated, or unusual.
 
-
-
-1\. Review the CloudTrail event.
-
-2\. Identify the user, role, source IP address, event name, and affected service.
-
-3\. Determine whether the action was expected or authorized.
-
-4\. Validate whether the denied request came from a known user or service.
-
-5\. Review IAM permissions if the action was legitimate.
-
-6\. Investigate further if the activity appears suspicious, repeated, or unusual.
-
-
-
-\## 📸 Evidence
-
-
+## 📸 Evidence
 
 Screenshots captured:
 
+- [Unauthorized API metric filter created](../screenshots/08-unauthorized-api-metric-filter.png)
 
+- [Unauthorized API alarm created](../screenshots/09-unauthorized-api-alarm-created.png)
 
-\- \[Unauthorized API metric filter created](../screenshots/08-unauthorized-api-metric-filter.png)
+- [SNS email subscription confirmed](../screenshots/10-sns-email-confirmed.png)
 
-\- \[Unauthorized API alarm created](../screenshots/09-unauthorized-api-alarm-created.png)
+- [Read-only test user created](../screenshots/11-readonly-test-user-created.png)
 
-\- \[SNS email subscription confirmed](../screenshots/10-sns-email-confirmed.png)
+- [Access denied test event](../screenshots/12-access-denied-test-event.png)
 
-\- \[Read-only test user created](../screenshots/11-readonly-test-user-created.png)
+- [Unauthorized API alarm triggered](../screenshots/13-unauthorized-api-alarm-triggered.png)
 
-\- \[Access denied test event](../screenshots/12-access-denied-test-event.png)
-
-\- \[Unauthorized API alarm triggered](../screenshots/13-unauthorized-api-alarm-triggered.png)
-
-
-
-\## 🔒 Security Considerations
-
-
+## 🔒 Security Considerations
 
 Before publishing this project, screenshots should be reviewed and sensitive information should be removed or redacted, including:
 
+- AWS account IDs
 
+- ARNs
 
-\- AWS account IDs
+- Usernames
 
-\- ARNs
+- Email addresses
 
-\- Usernames
+- IP addresses
 
-\- Email addresses
+- SNS subscription details
 
-\- IP addresses
+- Browser URLs
 
-\- SNS subscription details
+- CloudWatch URLs
 
-\- Browser URLs
-
-\- CloudWatch URLs
-
-
-
-\## 🧠 SOC Analyst Notes
-
-
+## 🧠 SOC Analyst Notes
 
 This detection provides visibility into denied AWS API activity. While not every unauthorized API call is malicious, repeated or unusual denied actions can indicate reconnaissance, privilege probing, compromised credentials, or misconfigured access.
 
-
-
 In this lab, the detection was validated by using a read-only IAM test user to attempt a restricted IAM action. The denied action generated an access denied event, which was captured by CloudTrail and monitored through CloudWatch.
-
