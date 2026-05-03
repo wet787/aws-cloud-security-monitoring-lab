@@ -28,23 +28,23 @@ A temporary read-only IAM user was created to simulate a user with limited permi
 
 Read-only user attempted restricted IAM action
 
-&#x20;       ↓
+       ↓
 
 AWS denied the CreateUser action
 
-&#x20;       ↓
+       ↓
 
 CloudTrail recorded the denied API event
 
-&#x20;       ↓
+       ↓
 
 CloudWatch metric filter matched the event
 
-&#x20;       ↓
+       ↓
 
 CloudWatch alarm showed unauthorized API activity
 
-&#x20;       ↓
+       ↓
 
 SNS notification channel was configured and confirmed
 
